@@ -250,7 +250,7 @@ ModelImporter:
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
-    - boneName: L_Make_Eye
+    - boneName: L_Eye
       humanName: LeftEye
       limit:
         min: {x: 0, y: 0, z: 0}
@@ -258,7 +258,7 @@ ModelImporter:
         value: {x: 0, y: 0, z: 0}
         length: 0
         modified: 0
-    - boneName: R_Make_Eye
+    - boneName: R_Eye
       humanName: RightEye
       limit:
         min: {x: 0, y: 0, z: 0}

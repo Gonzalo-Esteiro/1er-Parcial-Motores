@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17916799, g: 0.22434524, b: 0.3061049, a: 1}
+  m_IndirectSpecularColor: {r: 0.17341504, g: 0.21677566, b: 0.29885098, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -240,6 +240,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -314,8 +315,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.07268339, y: -0.91711015, z: 0.19726986, w: 0.33868968}
-  m_LocalPosition: {x: 1.41108, y: 2.0551662, z: 1.72594}
+  m_LocalRotation: {x: 0.090185575, y: -0.01101327, z: 0.0010696971, w: 0.99586356}
+  m_LocalPosition: {x: 0.56434107, y: 2.126458, z: -2.2293384}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -365,6 +366,25 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1e4eae677665ae41bd3c466ba431199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetBone: {fileID: 537207401}
+  sensitivityX: 500
+  sensitivityY: 500
+  minYLimit: -20
+  maxYLimit: 60
+  distanceToTarget: 3
+  cameraHeightOffset: 0.5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,13 +473,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.8600714, y: -0.23045547, z: 0.11780321, w: 0.43964747}
+  m_LocalRotation: {x: 0.6194633, y: -0.16598473, z: 0.19858599, w: 0.74113286}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 125.85, y: 0, z: 30}
+  m_LocalEulerAnglesHint: {x: 79.78, y: 0, z: 30}
 --- !u!114 &410087042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +503,12 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!4 &537207401 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8579681621207964641, guid: 3253d03d14534664f98365b235f73ef3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1830018344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &638691178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1137,7 +1163,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 3253d03d14534664f98365b235f73ef3,
         type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5917145862479251942, guid: 3253d03d14534664f98365b235f73ef3,
         type: 3}
