@@ -383,8 +383,13 @@ MonoBehaviour:
   sensitivityY: 500
   minYLimit: -20
   maxYLimit: 60
-  distanceToTarget: 3
+  maxDistance: 5
+  minDistance: 1.5
   cameraHeightOffset: 0.5
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 54
+  cameraRadius: 0.2
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,6 +1180,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 7327491fd7059234492cfc1ae2fdb3a5, type: 2}
+    - target: {fileID: 8579681621207964641, guid: 3253d03d14534664f98365b235f73ef3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9616225
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579681621207964641, guid: 3253d03d14534664f98365b235f73ef3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.27437615
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579681621207964641, guid: 3253d03d14534664f98365b235f73ef3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579681621207964641, guid: 3253d03d14534664f98365b235f73ef3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -31.85
+      objectReference: {fileID: 0}
     - target: {fileID: 8850890102210632714, guid: 3253d03d14534664f98365b235f73ef3,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
