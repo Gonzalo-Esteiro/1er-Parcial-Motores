@@ -14,31 +14,40 @@ public class InterfazCazador : MonoBehaviour
     public float costoCorrerPorSegundo = 10f;
     public float velocidadRegeneracion = 20f;
 
+    public float recuperacionFatiga = 10f;
     private float staminaActual;
-
+    private bool fatigado = false;
     void Start()
     {
         staminaActual = staminaMaxima;
         ActualizarVisualUI();
     }
 
-    
-    public void ManejarEstamina(bool estaCorriendo, bool Moviendose)
+
+    public void ManejarEstamina(bool estaCorriendo, bool moviendose)
     {
-        if (estaCorriendo && Moviendose)
+        if (estaCorriendo && moviendose && !fatigado)
         {
-            // Restamos estamina en base al tiempo transcurrido
             staminaActual -= costoCorrerPorSegundo * Time.deltaTime;
+
+            // Si tocamos el fondo absoluto, entramos en estado de fatiga inmediatamente
+            if (staminaActual <= 0f)
+            {
+                fatigado = true;
+            }
         }
         else if (staminaActual < staminaMaxima)
         {
-            // Si no corre, se regenera normalmente
             staminaActual += velocidadRegeneracion * Time.deltaTime;
+
+            // Desactivamos la fatiga SOLO cuando la energía supera el umbral de seguridad (ej: 10f)
+            if (fatigado && staminaActual >= recuperacionFatiga)
+            {
+                fatigado = false;
+            }
         }
 
-        // me aseguro que la stamina nunca llegue a cero ni supere el máximo
         staminaActual = Mathf.Clamp(staminaActual, 0f, staminaMaxima);
-
         ActualizarVisualUI();
     }
 
@@ -48,6 +57,13 @@ public class InterfazCazador : MonoBehaviour
         if (staminaActual >= costoRodar)
         {
             staminaActual -= costoRodar;
+
+            // Rodar también puede gatillar la fatiga si te deja en 0
+            if (staminaActual <= 0f)
+            {
+                fatigado = true;
+            }
+
             staminaActual = Mathf.Clamp(staminaActual, 0f, staminaMaxima);
             ActualizarVisualUI();
             return true;
@@ -55,11 +71,10 @@ public class InterfazCazador : MonoBehaviour
         return false;
     }
 
-    // Para confirmar sí el jugador puede correr
+    // El script de movimiento ahora consulta directamente si está fatigado
     public bool TieneEstaminaParaCorrer()
     {
-
-        return staminaActual > 0.5f; // Deja de correr justo antes de llegar a 0 absoluto
+        return !fatigado && staminaActual > 0f;
     }
 
     void ActualizarVisualUI()
