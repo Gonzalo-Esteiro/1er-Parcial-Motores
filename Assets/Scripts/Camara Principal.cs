@@ -5,10 +5,10 @@ using UnityEngine;
 public class CamaraPrincipal : MonoBehaviour
 {
     public Transform cameraAngle;
-    public float distanciaMax = 5.0f; // Renombrada para claridad
+    public float distanciaMax = 5.0f;
     public float sensibilidad = 3.0f;
-    public LayerMask capasColision;    // ¡IMPORTANTE! Asigna aquí las capas del suelo/paredes
-    public float radioCamara = 0.2f;   // Pequeño margen para que la cámara no se pegue al 100%
+    public LayerMask capasColision;
+    public float radioCamara = 0.2f;
 
     private float rotacionX = 0.0f;
     private float rotacionY = 0.0f;
@@ -36,10 +36,10 @@ public class CamaraPrincipal : MonoBehaviour
         // Posición ideal máxima sin colisiones
         Vector3 posicionIdeal = cameraAngle.position - direccionDeseada * distanciaMax;
 
-        // Por defecto, la distancia actual es la máxima
+        
         float distanciaActual = distanciaMax;
 
-        // Lanzamos un rayo desde el origen hasta la posición ideal de la cámara
+        // Lanzamos un raycast desde el origen hasta la posición ideal de la cámara
         RaycastHit hit;
         if (Physics.Raycast(cameraAngle.position, -direccionDeseada, out hit, distanciaMax, capasColision))
         {

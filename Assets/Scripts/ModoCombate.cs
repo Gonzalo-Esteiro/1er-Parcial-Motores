@@ -34,17 +34,13 @@ public class ModoCombate : MonoBehaviour
             Desenfundar();
         }
 
-        // --------------------------------
-        // ENFUNDE
-        // --------------------------------
+        // Enfundar el arma cuando se presiona la tecla Shift, importante en futuros combates para recuperarse y tener movilidad
         if (enCombate && !atacando && !cubriendose && !enfundando && Input.GetKeyDown(KeyCode.LeftShift))
         {
             Enfundar();
         }
 
-        // --------------------------------
-        // CUBRIRSE
-        // --------------------------------
+        // Cubrirse con el escudo mientras se mantiene presionada la tecla R
         if (enCombate && !atacando && !enfundando)
         {
             if (Input.GetKeyDown(KeyCode.R))
@@ -60,18 +56,16 @@ public class ModoCombate : MonoBehaviour
             }
         }
 
-        // --------------------------------
-        // ATAQUES SIMPLES
-        // --------------------------------
+        // Esto busca que el jugador no pueda atacar mientras desenfunda, enfunda, se cubre o ya está atacando
         if (enCombate && !desenfundando && !enfundando && !cubriendose && !atacando)
         {
-            // Espada (Attack1)
+            // Espada - Attack1
             if (Input.GetMouseButtonDown(0))
             {
                 AtacarEspada();
             }
 
-            // Escudo (Attack3)
+            // Escudo - Attack3
             if (Input.GetMouseButtonDown(1))
             {
                 AtacarEscudo();
@@ -79,9 +73,7 @@ public class ModoCombate : MonoBehaviour
         }
     }
 
-    // =====================================================
-    // DESENFUNDE / ENFUNDE
-    // =====================================================
+    // Enfundar y Desenfundar Espada
     void Desenfundar()
     {
         desenfundando = true;
@@ -115,9 +107,7 @@ public class ModoCombate : MonoBehaviour
         ColocarEspadaEnVaina();
     }
 
-    // =====================================================
-    // LÓGICA DE ATAQUES DIRECTOS
-    // =====================================================
+    // Ataques con Espada y Escudo
     void AtacarEspada()
     {
         atacando = true;
@@ -138,9 +128,7 @@ public class ModoCombate : MonoBehaviour
         animator.ResetTrigger("Attack3");
     }
 
-    // =====================================================
-    // HITBOX Y ACOPLAMIENTOS
-    // =====================================================
+    // Hitbox de ambas piezas de ataque (Espada y Escudo)
     public void ActivarHitbox() => Debug.Log("Hitbox ACTIVADA");
     public void DesactivarHitbox() => Debug.Log("Hitbox DESACTIVADA");
 
@@ -162,9 +150,7 @@ public class ModoCombate : MonoBehaviour
         espada.localRotation = Quaternion.identity;
     }
 
-    // =====================================================
-    // PERMISOS PARA EL CONTROLADOR DE MOVIMIENTO
-    // =====================================================
+    // Confirmar sí el jugador puede moverse o no
     public bool PuedeMoverse()
     {
         if (desenfundando    || cubriendose || atacando)

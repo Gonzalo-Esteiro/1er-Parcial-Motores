@@ -5,15 +5,14 @@ using UnityEngine;
 public class ControlJugador : MonoBehaviour
 {
     public ModoCombate modoCombate;
+    public InterfazCazador interfazUI;
 
     public float velocidadCaminar = 2.0f;
     public float velocidadCorrer = 5.0f;
 
     [Header("Ajustes del Roll")]
-    public float distanciaRodar = 3.0f;
+    public float distanciaRodar = 5.0f;
     public float duracionRodar = 0.5f;
-
-    [Tooltip("Diseña la curva: Empieza alto (ej: 2.0) y termina en 0 para simular la pérdida de fuerza.")]
     public AnimationCurve curvaVelocidadRoll = AnimationCurve.Linear(0, 2, 1, 0);
 
     public CamaraPrincipal camara;
@@ -39,17 +38,10 @@ public class ControlJugador : MonoBehaviour
         if (rodando)
         {
             tiempoRodar += Time.deltaTime;
-
-            // 1. Calculamos el progreso actual del Roll entre 0.0 (inicio) y 1.0 (fin)
             float progresoNormalizado = Mathf.Clamp01(tiempoRodar / duracionRodar);
-
-            // 2. Evaluamos la curva en base al progreso para obtener el multiplicador de fuerza actual
             float multiplicadorCurva = curvaVelocidadRoll.Evaluate(progresoNormalizado);
-
-            // 3. Calculamos la velocidad base necesaria para cubrir la distancia objetivo
             float velocidadBase = distanciaRodar / duracionRodar;
 
-            // 4. Aplicamos el desplazamiento afectado por la curva (mucha fuerza al inicio, poca al final)
             Vector3 desplazamientoRodar = direccionRodado * (velocidadBase * multiplicadorCurva) * Time.deltaTime;
             rb.MovePosition(rb.position + desplazamientoRodar);
 
@@ -69,8 +61,8 @@ public class ControlJugador : MonoBehaviour
         Vector3 movimiento = direccionCamara * vertical + derechaCamara * horizontal;
         movimiento = Vector3.ClampMagnitude(movimiento, 1.0f);
 
-        // Comprobación de Roll mediante permisos de ModoCombate
-        if (Input.GetKeyDown(KeyCode.Space) && modoCombate.PuedeRodar())
+        // Control de comando para el Roll (Gasta estamina fija de golpe)
+        if (Input.GetKeyDown(KeyCode.Space) && modoCombate.PuedeRodar() && interfazUI != null && interfazUI.ConsumirStaminaRodar())
         {
             rodando = true;
             tiempoRodar = 0.0f;
@@ -89,14 +81,25 @@ public class ControlJugador : MonoBehaviour
             return;
         }
 
-        // Comprobación de Movimiento mediante permisos de ModoCombate
         if (!modoCombate.PuedeMoverse())
         {
             animator.SetFloat("Speed", 0.5f);
+            
+            if (interfazUI != null) interfazUI.ManejarEstamina(false, false);
             return;
         }
 
-        float velocidad = Input.GetKey(KeyCode.LeftShift) ? velocidadCorrer : velocidadCaminar;
+        // Esto busca si el jugador está intentando correr y si tiene estamina suficiente para hacerlo
+        bool intentandoCorrer = Input.GetKey(KeyCode.LeftShift) && movimiento != Vector3.zero;
+        bool puedeCorrer = intentandoCorrer && interfazUI != null && interfazUI.TieneEstaminaParaCorrer();
+
+        float velocidad = puedeCorrer ? velocidadCorrer : velocidadCaminar;
+
+        // Avisamos a la UI del estado actual para que reste o sume energía en este frame
+        if (interfazUI != null)
+        {
+            interfazUI.ManejarEstamina(puedeCorrer, movimiento != Vector3.zero);
+        }
 
         if (movimiento != Vector3.zero)
         {
