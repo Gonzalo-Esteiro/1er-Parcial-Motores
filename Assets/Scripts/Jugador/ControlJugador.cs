@@ -5,7 +5,7 @@ using UnityEngine;
 public class ControlJugador : MonoBehaviour
 {
     public ModoCombate modoCombate;
-    public InterfazCazador interfazUI;
+    public InterfazJugador interfazUI;
 
     public float velocidadCaminar = 2.0f;
     public float velocidadCorrer = 5.0f;

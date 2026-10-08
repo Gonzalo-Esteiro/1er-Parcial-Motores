@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InterfazCazador : MonoBehaviour
+public class InterfazJugador : MonoBehaviour
 {
     [Header("Referencias UI")]
     public Image barraStaminaFill;
@@ -13,6 +13,11 @@ public class InterfazCazador : MonoBehaviour
     public float costoRodar = 25f;
     public float costoCorrerPorSegundo = 10f;
     public float velocidadRegeneracion = 20f;
+
+    [Header("Ajustes de Números de Daño")]
+    public GameObject prefabTextoDamage;
+    public Vector3 offsetEnemigo = new Vector3(0, 2f, 0);
+    public Transform canvasPrincipal;
 
     public float recuperacionFatiga = 10f;
     private float staminaActual;
@@ -84,4 +89,38 @@ public class InterfazCazador : MonoBehaviour
             barraStaminaFill.fillAmount = staminaActual / staminaMaxima;
         }
     }
+
+    public void CrearNumeroDamage(float valorDamage, Vector3 posicionMundoEnemigo)
+    {
+        if (prefabTextoDamage == null) return;
+
+        if (canvasPrincipal == null)
+        {
+            Canvas objCanvas = Object.FindFirstObjectByType<Canvas>();
+            if (objCanvas != null) canvasPrincipal = objCanvas.transform;
+        }
+
+        // 1. Calculamos la posición real en el espacio 3D sumando la altura (offset) sobre el enemigo
+        Vector3 posicionMundoFinal = posicionMundoEnemigo + offsetEnemigo;
+
+        // 2. CONVERSIÓN CRÍTICA: Transformamos la posición 3D del mundo a la posición 2D de la pantalla del jugador
+        Vector3 posicionPantalla = Camera.main.WorldToScreenPoint(posicionMundoFinal);
+
+        // Si el enemigo está detrás de la cámara, ignoramos el renderizado para evitar glitches visuales
+        if (posicionPantalla.z < 0) return;
+
+        // 3. Instanciamos el texto flotante directamente dentro del Canvas
+        GameObject clonTexto = Instantiate(prefabTextoDamage, canvasPrincipal);
+
+        // 4. Asignamos de forma exacta la posición en coordenadas de pantalla (2D)
+        clonTexto.transform.position = posicionPantalla;
+
+        TextoDamageFlotante scriptTexto = clonTexto.GetComponent<TextoDamageFlotante>();
+        if (scriptTexto != null)
+        {
+            scriptTexto.Inicializar(valorDamage);
+        }
+    }
+
+
 }

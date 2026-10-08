@@ -18,6 +18,10 @@ public class ModoCombate : MonoBehaviour
     public bool desenfundando = false;
     public bool enfundando = false;
 
+    [Header("Referencias de Hitboxes")]
+    public HitboxArma hitboxEspada;
+    public HitboxArma hitboxEscudo;
+
     void Start()
     {
         if (animator == null)
@@ -130,7 +134,31 @@ public class ModoCombate : MonoBehaviour
 
     // Hitbox de ambas piezas de ataque (Espada y Escudo)
     public void ActivarHitbox() => Debug.Log("Hitbox ACTIVADA");
+
+    public void ActivarHitboxEspada()
+    {
+        if (hitboxEspada != null) hitboxEspada.ActivarHitbox();
+        Debug.Log("HITBOX ESPADA ACTIVADA");
+    }
+
+    public void ActivarHitboxEscudo()
+    {
+        if (hitboxEscudo != null) hitboxEscudo.ActivarHitbox();
+        Debug.Log("HITBOX ESCUDO ACTIVADA");
+    }
     public void DesactivarHitbox() => Debug.Log("Hitbox DESACTIVADA");
+
+    public void DesactivarHitboxEspada()
+    {
+        if (hitboxEspada != null) hitboxEspada.DesactivarHitbox();
+        Debug.Log("HITBOX ESPADA DESACTIVADA");
+    }
+
+    public void DesactivarHitboxEscudo()
+    {
+        if (hitboxEscudo != null) hitboxEscudo.DesactivarHitbox();
+        Debug.Log("HITBOX ESCUDO DESACTIVADA");
+    }
 
     public void EspadaAMano()
     {
