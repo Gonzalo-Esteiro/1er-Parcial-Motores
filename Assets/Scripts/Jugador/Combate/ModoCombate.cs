@@ -37,7 +37,7 @@ public class ModoCombate : MonoBehaviour
     void Update()
     {
         // Si el jugador está muerto, bloqueamos por completo todas las acciones de combate
-        if (interfazJugador != null && interfazJugador.SaberSiEstaMuerto()) return;
+        if (interfazJugador != null && interfazJugador.EsSaberSiEstaMuerto()) return;
 
         // --------------------------------
         // DESENFUNDE
@@ -188,28 +188,26 @@ public class ModoCombate : MonoBehaviour
     // =========================================================================
 
     public bool PuedeMoverse()
-    {
-        // 1. Si la interfaz no existe o el personaje está muerto/recibiendo daño, NO se mueve
-        if (interfazJugador != null && (interfazJugador.SaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
-            return false;
+{
+    if (interfazJugador != null && (interfazJugador.EsSaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
+        return false;
 
-        // 2. Si está haciendo animaciones de combate comprometidas, NO se mueve
-        if (desenfundando || enfundando || cubriendose || atacando)
-            return false;
+    if (desenfundando || cubriendose || atacando)
+        return false;
 
-        return true;
-    }
+    return true;
+}
 
-    public bool PuedeRodar()
-    {
-        // 1. Si está muerto o recibiendo el impacto de un golpe, NO puede rodar
-        if (interfazJugador != null && (interfazJugador.SaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
-            return false;
+public bool PuedeRodar()
+{
+    if (interfazJugador != null && (interfazJugador.EsSaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
+        return false;
 
-        // 2. Si está en medio de otra animación de combate, NO puede rodar
-        if (desenfundando || enfundando || cubriendose || atacando)
-            return false;
+    if (desenfundando || cubriendose || atacando)
+        return false;
 
-        return true;
-    }
+    return true;
+}
+
+
 }

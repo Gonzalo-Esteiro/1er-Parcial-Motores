@@ -5,7 +5,7 @@ using UnityEngine;
 public class HitboxArma : MonoBehaviour
 {
     [Header("Ajustes de Impacto")]
-    public float damageGolpe = 20f;
+    public float damageGolpe = 20f; // Mantenemos tu variable original
 
     private Collider colliderArma;
 
@@ -29,14 +29,27 @@ public class HitboxArma : MonoBehaviour
             return;
         }
 
-        // Alerta de diagnóstico: Solo nos avisará si golpeamos un objeto interactivo real
+        // Alerta de diagnóstico
         Debug.Log($"[COLISIÓN VALIDADA] El arma {gameObject.name} golpeó a: {other.name}");
 
+        // 1. Buscamos el receptor tradicional para mantener tu lógica de destrucción activa
         ReceptorImpacto receptor = other.GetComponent<ReceptorImpacto>();
+
+        // =========================================================================
+        // CONEXIÓN CLAVE CON LA IA: Buscamos si el objetivo tiene el script del Monstruo
+        // =========================================================================
+        EnemigoIA scriptEnemigo = other.GetComponent<EnemigoIA>();
+        if (scriptEnemigo != null)
+        {
+            // Le enviamos el damage directo a la IA para que controle la UI y los cambios de música
+            scriptEnemigo.RecibirDamageMonstruo(damageGolpe);
+            Debug.Log($"[IA COMBATE] Damage de {damageGolpe} enviado exitosamente al sistema de música del enemigo.");
+        }
+        // =========================================================================
 
         if (receptor != null)
         {
-            Debug.Log($"[HIT] ¡Objetivo válido confirmado! Aplicando {damageGolpe} de daño a {other.name}.");
+            Debug.Log($"[HIT] ¡Objetivo válido confirmado! Aplicando {damageGolpe} de damage a {other.name}.");
             receptor.RecibirGolpe(damageGolpe);
         }
     }

@@ -55,7 +55,7 @@ public class InterfazJugador : MonoBehaviour
     // GESTIÓN DE VIDA Y DAÑO (Original de VidaJugador)
     // =========================================================================
 
-    public void RecibirDanio(float cantidad, Vector3 direccionAtaque)
+    public void RecibirDamage(float cantidad, Vector3 direccionAtaque)
     {
         if (estaMuerto || esInvulnerable) return;
 
@@ -209,18 +209,26 @@ public class InterfazJugador : MonoBehaviour
             scriptTexto.Inicializar(valorDamage);
         }
     }
-    public bool SaberSiEstaMuerto()
+    public bool EsSaberSiEstaMuerto()
     {
         return estaMuerto;
     }
 
+    // Nueva variable simple para saber si el cazador está aturdido por un golpe
+    private bool bloqueadoPorHit = false;
+
     public bool RecibiendoHit()
     {
-        // Evaluamos si el Animator está reproduciendo actualmente la animación de daño "Hit"
-        if (animator != null)
-        {
-            return animator.GetCurrentAnimatorStateInfo(0).IsName("Hit");
-        }
-        return false;
+        return bloqueadoPorHit;
+    }
+
+    public void IniciarBloqueoHit()
+    {
+        bloqueadoPorHit = true;
+    }
+
+    public void TerminarBloqueoHit()
+    {
+        bloqueadoPorHit = false;
     }
 }

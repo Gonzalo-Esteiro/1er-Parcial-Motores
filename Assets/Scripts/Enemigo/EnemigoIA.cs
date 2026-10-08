@@ -9,7 +9,10 @@ public class EnemigoIA : MonoBehaviour
 
     [Header("Referencias")]
     public Transform jugador;
-    public float vidaEnemigo = 100f;
+
+    [Header("Ajustes de Salud")]
+    public float vidaEnemigo = 200f;
+    public float vidaParaFaseCritica = 60f;
 
     [Header("Rangos y Velocidades")]
     public float distanciaDeteccion = 15f;
@@ -119,33 +122,33 @@ public class EnemigoIA : MonoBehaviour
             if (vida != null)
             {
                 Vector3 direccionImpacto = (collision.transform.position - transform.position).normalized;
-                vida.RecibirDanio(danioCarga, direccionImpacto);
+                vida.RecibirDamage(danioCarga, direccionImpacto);
             }
         }
     }
 
-    public void RecibirDanioMonstruo(float cantidad)
+    public void RecibirDamageMonstruo(float cantidad)
     {
         if (estadoActual == EstadoEnemigo.Muerto) return;
 
         vidaEnemigo -= cantidad;
 
-        // Controla la música de fase crítica de forma única
-        if (vidaEnemigo <= 50f && vidaEnemigo > 0 && !faseCriticaActivada)
+        // Evalúa la variable personalizada del Inspector
+        if (vidaEnemigo <= vidaParaFaseCritica && vidaEnemigo > 0 && !faseCriticaActivada)
         {
             faseCriticaActivada = true;
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaEnemigoCritico);
-            Debug.Log("¡Música Cambiada: FASE CRÍTICA DEL MONSTRUO!");
+            Debug.Log("¡Música Cambiada: FASE CRÍTICA!");
         }
 
-        // Muerte del enemigo especial
         if (vidaEnemigo <= 0 && estadoActual != EstadoEnemigo.Muerto)
         {
             estadoActual = EstadoEnemigo.Muerto;
             if (animator) animator.SetTrigger("Die");
 
+            // Dispara la música de victoria al caer el jefe
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaVictoria);
-            Debug.Log("¡El monstruo ha sido cazado!");
+            Debug.Log("¡El monstruo ha sido cazado! Sonando música de victoria.");
         }
     }
 }
