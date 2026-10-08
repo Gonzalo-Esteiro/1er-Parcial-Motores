@@ -10,6 +10,7 @@ public class ControlJugador : MonoBehaviour
     public float velocidadCaminar = 2.0f;
     public float velocidadCorrer = 5.0f;
 
+
     [Header("Ajustes del Roll")]
     public float distanciaRodar = 5.0f;
     public float duracionRodar = 0.5f;
@@ -112,4 +113,26 @@ public class ControlJugador : MonoBehaviour
 
         animator.SetFloat("Speed", movimiento.magnitude * velocidad);
     }
+
+    public void IniciarIFrames()
+    {
+        // Buscamos el componente unificado en el jugador y activamos la invulnerabilidad
+        InterfazJugador interfaz = GetComponent<InterfazJugador>();
+        if (interfaz != null)
+        {
+            interfaz.esInvulnerable = true;
+            Debug.Log("¡I-Frames ACTIVADOS! El cazador es inmune.");
+        }
+    }
+
+    public void TerminarIFrames()
+    {
+        InterfazJugador interfaz = GetComponent<InterfazJugador>();
+        if (interfaz != null)
+        {
+            interfaz.esInvulnerable = false;
+            Debug.Log("I-Frames TERMINADOS. El cazador puede recibir daño.");
+        }
+    }
+
 }

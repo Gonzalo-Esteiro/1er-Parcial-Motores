@@ -118,10 +118,6 @@ public class InterfazJugador : MonoBehaviour
         }
     }
 
-    // Eventos de animación llamados por el clip de Roll
-    public void IniciarIFrames() { esInvulnerable = true; }
-    public void TerminarIFrames() { esInvulnerable = false; }
-
 
     // =========================================================================
     // GESTIÓN DE STAMINA (Original de InterfazJugador)
