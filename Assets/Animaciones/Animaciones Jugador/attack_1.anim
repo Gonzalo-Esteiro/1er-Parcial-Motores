@@ -35844,15 +35844,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.75
-    functionName: DesactivarHitbox
+  - time: 0.5833333
+    functionName: DesactivarHitboxEspada
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.75
-    functionName: DesactivarHitboxEspada
+  - time: 0.5833333
+    functionName: DesactivarHitbox
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
