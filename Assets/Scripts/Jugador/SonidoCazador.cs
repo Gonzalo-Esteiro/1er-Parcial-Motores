@@ -39,10 +39,6 @@ public class HunterAudioEvents : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    // =========================================================================
-    // EVENTOS DE AUDIO: MOVIMIENTO
-    // =========================================================================
-
     public void EjecutarFootstep()
     {
         if (Time.time - tiempoUltimoPaso < cooldownPasos) return;
@@ -74,10 +70,6 @@ public class HunterAudioEvents : MonoBehaviour
         }
     }
 
-    // =========================================================================
-    // EVENTOS DE AUDIO NUEVOS: HOLDER ARMA
-    // =========================================================================
-
     // Se ejecuta al inicio de la animación de desenfundar
     public void EjecutarDesenfunde()
     {
@@ -98,7 +90,7 @@ public class HunterAudioEvents : MonoBehaviour
         }
     }
 
-    // Se ejecuta en el frame de impacto o swing del Ataque 1
+    // Se ejecuta en el swing del Ataque 1
     public void EjecutarAttack1()
     {
         if (Time.time - tiempoUltimoAtaque < cooldownAtaques) return;
@@ -111,7 +103,7 @@ public class HunterAudioEvents : MonoBehaviour
         }
     }
 
-    // Se ejecuta en el frame de impacto o swing del Ataque 3 (Golpe fuerte)
+    // Se ejecuta en el frame de impacto del Ataque 3
     public void EjecutarAttack3()
     {
         if (Time.time - tiempoUltimoAtaque < cooldownAtaques) return;
