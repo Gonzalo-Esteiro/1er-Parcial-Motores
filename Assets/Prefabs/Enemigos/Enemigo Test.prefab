@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5290771047006203307}
   - component: {fileID: 7753175725878790568}
   - component: {fileID: 539033435813751307}
+  - component: {fileID: 2255649677668902013}
   m_Layer: 0
   m_Name: Bean_Enemigo
   m_TagString: Enemigo
@@ -180,4 +181,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96eb46f9de62b554a94522cbb8075926, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maximoImpactoSoportado: 100
+  maximoImpactoSoportado: 500
+--- !u!114 &2255649677668902013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5464807494502779089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb37b0f1b3268aa47ac44cec11ea01c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  estadoActual: 0
+  jugador: {fileID: 0}
+  vidaEnemigo: 500
+  distanciaDeteccion: 15
+  distanciaAtaque: 4
+  velocidadPersecucion: 3.5
+  velocidadPasoAtras: 1.5
+  fuerzaEmbestida: 15
+  danioCarga: 25

@@ -11,6 +11,7 @@ public class MusicManager : MonoBehaviour
     public AudioClip musicaCombate;
     public AudioClip musicaEnemigoCritico;
     public AudioClip musicaVictoria;
+    public AudioClip musicaDesmayo;
     public AudioClip musicaDerrota;
 
     private AudioSource audioSource;
