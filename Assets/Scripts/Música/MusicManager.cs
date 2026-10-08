@@ -41,7 +41,7 @@ public class MusicManager : MonoBehaviour
 
     private IEnumerator TransicionMusical(AudioClip nuevoClip)
     {
-        float duracionFade = 1.5f;
+        float duracionFade = 1f;
         float tiempo = 0f;
         float volumenInicial = audioSource.volume;
 

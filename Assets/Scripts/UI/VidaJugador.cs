@@ -56,7 +56,7 @@ public class VidaJugador : MonoBehaviour
 
     private IEnumerator SecuenciaReiniciar()
     {
-        yield return new WaitForSeconds(3.0f); // Espera a que termine la animación
+        yield return new WaitForSeconds(9.0f); // Espera a que termine la animación
 
         if (vidasRestantes > 0)
         {

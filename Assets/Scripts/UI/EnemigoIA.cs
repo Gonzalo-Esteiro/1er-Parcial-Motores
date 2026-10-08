@@ -82,27 +82,32 @@ public class EnemigoIA : MonoBehaviour
         estadoActual = EstadoEnemigo.PreparandoCarga;
         if (animator) animator.SetTrigger("PrepareCharge");
 
-        // 1. Dar pasitos hacia atrás (Código puro moviendo el Rigidbody)
         float tiempoPreparacion = 0.8f;
         float reloj = 0f;
         while (reloj < tiempoPreparacion)
         {
             reloj += Time.deltaTime;
+
+            // =========================================================================
+            // CORRECCIÓN: El monstruo sigue pivotando hacia ti mientras retrocede
+            // =========================================================================
+            MirarAlJugador();
+            // =========================================================================
+
             rb.MovePosition(rb.position - transform.forward * velocidadPasoAtras * Time.deltaTime);
             yield return null;
         }
 
-        // 2. Lanzarse (Se activa la Hitbox del cuerpo del monstruo)
+        // Lanzarse (Fase Activa de Daño)
         estadoActual = EstadoEnemigo.Cargando;
         if (animator) animator.SetTrigger("LaunchCharge");
 
         Vector3 direccionCarga = transform.forward;
         rb.AddForce(direccionCarga * fuerzaEmbestida, ForceMode.VelocityChange);
 
-        yield return new WaitForSeconds(0.6f); // Duración del ataque activo
+        yield return new WaitForSeconds(0.6f);
 
-        // 3. Recuperación del monstruo tras la embestida
-        rb.velocity = Vector3.zero; // Frenado en seco
+        rb.velocity = Vector3.zero;
         estadoActual = EstadoEnemigo.Recuperandose;
         yield return new WaitForSeconds(1.5f);
 
@@ -128,7 +133,7 @@ public class EnemigoIA : MonoBehaviour
         vidaEnemigo -= cantidad;
 
         // Si le queda poca vida, cambia la música a fase crítica
-        if (vidaEnemigo <= 15f && vidaEnemigo > 0)
+        if (vidaEnemigo <= 50f && vidaEnemigo > 0)
         {
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaEnemigoCritico);
         }
@@ -139,7 +144,7 @@ public class EnemigoIA : MonoBehaviour
             if (animator) animator.SetTrigger("Die");
 
             // Regresa a la música de exploración cuando el enemigo cae
-            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaNormal);
+            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaVictoria);
             Debug.Log("¡Monstruo derrotado!");
         }
     }
