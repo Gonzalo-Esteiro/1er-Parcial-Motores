@@ -40,7 +40,7 @@ public class VidaJugador : MonoBehaviour
             // Reacción de daño: Activa tu animación de caer/tropezar
             animator.SetTrigger("Hit");
             // Pequeño empujón físico hacia atrás basado en el impacto
-            rb.AddForce(-direccionAtaque * 5f, ForceMode.Impulse);
+            rb.AddForce(-direccionAtaque * 1f, ForceMode.Impulse);
         }
     }
 

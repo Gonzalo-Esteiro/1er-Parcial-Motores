@@ -9,7 +9,7 @@ public class EnemigoIA : MonoBehaviour
 
     [Header("Referencias")]
     public Transform jugador;
-    public float vidaEnemigo = 200f;
+    public float vidaEnemigo = 100f;
 
     [Header("Rangos y Velocidades")]
     public float distanciaDeteccion = 15f;
@@ -128,7 +128,7 @@ public class EnemigoIA : MonoBehaviour
         vidaEnemigo -= cantidad;
 
         // Si le queda poca vida, cambia la música a fase crítica
-        if (vidaEnemigo <= 120f && vidaEnemigo > 0)
+        if (vidaEnemigo <= 15f && vidaEnemigo > 0)
         {
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaEnemigoCritico);
         }
