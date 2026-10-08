@@ -4,22 +4,19 @@ using UnityEngine;
 
 public class ControlJugador : MonoBehaviour
 {
-    public ModoCombate modoCombate;
-    public InterfazJugador interfazUI;
-
     public float velocidadCaminar = 2.0f;
     public float velocidadCorrer = 5.0f;
 
-
     [Header("Ajustes del Roll")]
-    public float distanciaRodar = 5.0f;
+    public float distanciaRodar = 3.0f;
     public float duracionRodar = 0.5f;
-    public AnimationCurve curvaVelocidadRoll = AnimationCurve.Linear(0, 2, 1, 0);
 
     public CamaraPrincipal camara;
 
     private Animator animator;
     private Rigidbody rb;
+
+    private InterfazJugador interfaz;
 
     private bool rodando = false;
     private float tiempoRodar = 0.0f;
@@ -30,8 +27,8 @@ public class ControlJugador : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        if (modoCombate == null)
-            modoCombate = GetComponent<ModoCombate>();
+        // Buscamos el componente unificado en el mismo objeto
+        interfaz = GetComponent<InterfazJugador>();
     }
 
     void Update()
@@ -39,20 +36,19 @@ public class ControlJugador : MonoBehaviour
         if (rodando)
         {
             tiempoRodar += Time.deltaTime;
-            float progresoNormalizado = Mathf.Clamp01(tiempoRodar / duracionRodar);
-            float multiplicadorCurva = curvaVelocidadRoll.Evaluate(progresoNormalizado);
-            float velocidadBase = distanciaRodar / duracionRodar;
 
-            Vector3 desplazamientoRodar = direccionRodado * (velocidadBase * multiplicadorCurva) * Time.deltaTime;
+            Vector3 desplazamientoRodar = direccionRodado * (distanciaRodar / duracionRodar) * Time.deltaTime;
             rb.MovePosition(rb.position + desplazamientoRodar);
 
             if (tiempoRodar >= duracionRodar)
             {
                 rodando = false;
             }
+
             return;
         }
 
+        // Calcular los vectores de movimiento normales
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -62,77 +58,76 @@ public class ControlJugador : MonoBehaviour
         Vector3 movimiento = direccionCamara * vertical + derechaCamara * horizontal;
         movimiento = Vector3.ClampMagnitude(movimiento, 1.0f);
 
-        // Control de comando para el Roll (Gasta estamina fija de golpe)
-        if (Input.GetKeyDown(KeyCode.Space) && modoCombate.PuedeRodar() && interfazUI != null && interfazUI.ConsumirStaminaRodar())
-        {
-            rodando = true;
-            tiempoRodar = 0.0f;
+        bool seEstaMoviendo = movimiento.magnitude > 0.1f;
+        bool quiereCorrer = Input.GetKey(KeyCode.LeftShift);
 
-            if (movimiento != Vector3.zero)
+        if (interfaz != null)
+        {
+            // Le pasamos los datos a la interfaz para que reduzca o regenere la barra
+            interfaz.ManejarEstamina(quiereCorrer, seEstaMoviendo);
+        }
+
+        // Detectar comando para Rodar (Roll) con validación de Estamina
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // Solo rueda si la interfaz confirma que hay suficiente energía
+            if (interfaz != null && interfaz.ConsumirStaminaRodar())
             {
-                direccionRodado = movimiento.normalized;
-                transform.rotation = Quaternion.LookRotation(direccionRodado);
+                rodando = true;
+                tiempoRodar = 0.0f;
+
+                if (seEstaMoviendo)
+                {
+                    direccionRodado = movimiento.normalized;
+                    transform.rotation = Quaternion.LookRotation(direccionRodado);
+                }
+                else
+                {
+                    direccionRodado = transform.forward;
+                }
+
+                animator.SetTrigger("Roll");
+                return;
             }
-            else
-            {
-                direccionRodado = transform.forward;
-            }
-
-            animator.SetTrigger("Roll");
-            return;
         }
 
-        if (!modoCombate.PuedeMoverse())
+        // Lógica normal de movimiento (Caminar / Correr)
+        float velocidad = velocidadCaminar;
+
+        // Solo corre si presionas Shift Y ADEMÁS la interfaz dice que no estás fatigado
+        if (quiereCorrer && interfaz != null && interfaz.TieneEstaminaParaCorrer())
         {
-            animator.SetFloat("Speed", 0.5f);
-            
-            if (interfazUI != null) interfazUI.ManejarEstamina(false, false);
-            return;
+            velocidad = velocidadCorrer;
         }
 
-        // Esto busca si el jugador está intentando correr y si tiene estamina suficiente para hacerlo
-        bool intentandoCorrer = Input.GetKey(KeyCode.LeftShift) && movimiento != Vector3.zero;
-        bool puedeCorrer = intentandoCorrer && interfazUI != null && interfazUI.TieneEstaminaParaCorrer();
-
-        float velocidad = puedeCorrer ? velocidadCorrer : velocidadCaminar;
-
-        // Avisamos a la UI del estado actual para que reste o sume energía en este frame
-        if (interfazUI != null)
-        {
-            interfazUI.ManejarEstamina(puedeCorrer, movimiento != Vector3.zero);
-        }
-
-        if (movimiento != Vector3.zero)
+        if (seEstaMoviendo)
         {
             Quaternion rotacionObjetivo = Quaternion.LookRotation(movimiento);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotacionObjetivo, 10.0f * Time.deltaTime);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                rotacionObjetivo,
+                10.0f * Time.deltaTime
+            );
         }
 
         Vector3 desplazamientoNormal = movimiento * velocidad * Time.deltaTime;
         rb.MovePosition(rb.position + desplazamientoNormal);
 
-        animator.SetFloat("Speed", movimiento.magnitude * velocidad);
+        animator.SetFloat(
+            "Speed",
+            movimiento.magnitude * velocidad
+        );
     }
 
+    // Invincibility Frames
     public void IniciarIFrames()
     {
-        // Buscamos el componente unificado en el jugador y activamos la invulnerabilidad
-        InterfazJugador interfaz = GetComponent<InterfazJugador>();
-        if (interfaz != null)
-        {
-            interfaz.esInvulnerable = true;
-            Debug.Log("¡I-Frames ACTIVADOS! El cazador es inmune.");
-        }
+        if (interfaz != null) interfaz.esInvulnerable = true;
     }
 
     public void TerminarIFrames()
     {
-        InterfazJugador interfaz = GetComponent<InterfazJugador>();
-        if (interfaz != null)
-        {
-            interfaz.esInvulnerable = false;
-            Debug.Log("I-Frames TERMINADOS. El cazador puede recibir daño.");
-        }
+        if (interfaz != null) interfaz.esInvulnerable = false;
     }
-
 }

@@ -25,6 +25,8 @@ public class EnemigoIA : MonoBehaviour
     private Animator animator;
     private bool musicaCombateIniciada = false;
 
+    private bool faseCriticaActivada = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -87,13 +89,7 @@ public class EnemigoIA : MonoBehaviour
         while (reloj < tiempoPreparacion)
         {
             reloj += Time.deltaTime;
-
-            // =========================================================================
-            // CORRECCIÓN: El monstruo sigue pivotando hacia ti mientras retrocede
-            // =========================================================================
             MirarAlJugador();
-            // =========================================================================
-
             rb.MovePosition(rb.position - transform.forward * velocidadPasoAtras * Time.deltaTime);
             yield return null;
         }
@@ -114,7 +110,7 @@ public class EnemigoIA : MonoBehaviour
         estadoActual = EstadoEnemigo.Persiguiendo;
     }
 
-    // HITBOX DEL ENEMIGO: Detecta de forma física el impacto contra la Hurtbox
+    //Detecta de forma física el impacto contra la Hurtbox
     private void OnCollisionEnter(Collision collision)
     {
         if (estadoActual == EstadoEnemigo.Cargando && collision.gameObject.CompareTag("Player"))
@@ -130,22 +126,26 @@ public class EnemigoIA : MonoBehaviour
 
     public void RecibirDanioMonstruo(float cantidad)
     {
+        if (estadoActual == EstadoEnemigo.Muerto) return;
+
         vidaEnemigo -= cantidad;
 
-        // Si le queda poca vida, cambia la música a fase crítica
-        if (vidaEnemigo <= 50f && vidaEnemigo > 0)
+        // Controla la música de fase crítica de forma única
+        if (vidaEnemigo <= 50f && vidaEnemigo > 0 && !faseCriticaActivada)
         {
+            faseCriticaActivada = true;
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaEnemigoCritico);
+            Debug.Log("¡Música Cambiada: FASE CRÍTICA DEL MONSTRUO!");
         }
 
+        // Muerte del enemigo especial
         if (vidaEnemigo <= 0 && estadoActual != EstadoEnemigo.Muerto)
         {
             estadoActual = EstadoEnemigo.Muerto;
             if (animator) animator.SetTrigger("Die");
 
-            // Regresa a la música de exploración cuando el enemigo cae
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaVictoria);
-            Debug.Log("¡Monstruo derrotado!");
+            Debug.Log("¡El monstruo ha sido cazado!");
         }
     }
 }

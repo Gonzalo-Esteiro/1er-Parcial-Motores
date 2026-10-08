@@ -1648,6 +1648,38 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8743332474429683241}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1720914391 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1117314596294188519, guid: d60672c6ce8442a4ba77adbd14e069d4,
+    type: 3}
+  m_PrefabInstance: {fileID: 8743332474429683241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720914398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720914391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adfe193f57852514ea9eeb8386d5dcb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vidaMaxima: 100
+  vidasRestantes: 3
+  staminaMaxima: 100
+  costoRodar: 25
+  costoCorrerPorSegundo: 10
+  velocidadRegeneracion: 20
+  recuperacionFatiga: 10
+  barraVidaUI: {fileID: 997319883}
+  barraStaminaFill: {fileID: 1864400797}
+  canvasPrincipal: {fileID: 269855552}
+  prefabTextoDamage: {fileID: 2130978649284251544, guid: 072c22b5fdb32c441baa2897a4280adc,
+    type: 3}
+  offsetEnemigo: {x: 0, y: 0, z: 0}
+  esInvulnerable: 0
 --- !u!1 &1724488804
 GameObject:
   m_ObjectHideFlags: 0
@@ -2250,7 +2282,7 @@ PrefabInstance:
         type: 3}
       propertyPath: interfazUI
       value: 
-      objectReference: {fileID: 269855553}
+      objectReference: {fileID: 0}
     - target: {fileID: 4609528822182440790, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       propertyPath: hitboxEscudo
@@ -2265,6 +2297,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1117314596294188519, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 1720914398}
     - targetCorrespondingSourceObject: {fileID: 3245938079896755270, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       insertIndex: 2

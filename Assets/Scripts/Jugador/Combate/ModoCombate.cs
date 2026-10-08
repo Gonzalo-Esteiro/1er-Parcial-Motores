@@ -22,14 +22,23 @@ public class ModoCombate : MonoBehaviour
     public HitboxArma hitboxEspada;
     public HitboxArma hitboxEscudo;
 
+    // REFERENCIA NUEVA: Conexión con la salud y estados de la interfaz
+    private InterfazJugador interfazJugador;
+
     void Start()
     {
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        // Buscamos el componente unificado en el jugador
+        interfazJugador = GetComponent<InterfazJugador>();
     }
 
     void Update()
     {
+        // Si el jugador está muerto, bloqueamos por completo todas las acciones de combate
+        if (interfazJugador != null && interfazJugador.SaberSiEstaMuerto()) return;
+
         // --------------------------------
         // DESENFUNDE
         // --------------------------------
@@ -38,7 +47,7 @@ public class ModoCombate : MonoBehaviour
             Desenfundar();
         }
 
-        // Enfundar el arma cuando se presiona la tecla Shift, importante en futuros combates para recuperarse y tener movilidad
+        // Enfundar el arma cuando se presiona la tecla Shift
         if (enCombate && !atacando && !cubriendose && !enfundando && Input.GetKeyDown(KeyCode.LeftShift))
         {
             Enfundar();
@@ -60,7 +69,7 @@ public class ModoCombate : MonoBehaviour
             }
         }
 
-        // Esto busca que el jugador no pueda atacar mientras desenfunda, enfunda, se cubre o ya está atacando
+        // Bloqueos de ataque ordinarios
         if (enCombate && !desenfundando && !enfundando && !cubriendose && !atacando)
         {
             // Espada - Attack1
@@ -95,10 +104,7 @@ public class ModoCombate : MonoBehaviour
     void Enfundar()
     {
         enfundando = true;
-
-        
         animator.SetTrigger("Sheathe");
-        
     }
 
     public void FinEnfunde()
@@ -127,12 +133,11 @@ public class ModoCombate : MonoBehaviour
     public void AtaqueTerminado()
     {
         atacando = false;
-
         animator.ResetTrigger("Attack1");
         animator.ResetTrigger("Attack3");
     }
 
-    // Hitbox de ambas piezas de ataque (Espada y Escudo)
+    // Hitbox de ambas piezas de ataque
     public void ActivarHitbox() => Debug.Log("Hitbox ACTIVADA");
 
     public void ActivarHitboxEspada()
@@ -178,10 +183,18 @@ public class ModoCombate : MonoBehaviour
         espada.localRotation = Quaternion.identity;
     }
 
-    // Confirmar sí el jugador puede moverse o no
+    // =========================================================================
+    // MODIFICACIÓN DE PERMISOS DE MOVIMIENTO Y ACCIONES
+    // =========================================================================
+
     public bool PuedeMoverse()
     {
-        if (desenfundando    || cubriendose || atacando)
+        // 1. Si la interfaz no existe o el personaje está muerto/recibiendo daño, NO se mueve
+        if (interfazJugador != null && (interfazJugador.SaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
+            return false;
+
+        // 2. Si está haciendo animaciones de combate comprometidas, NO se mueve
+        if (desenfundando || enfundando || cubriendose || atacando)
             return false;
 
         return true;
@@ -189,10 +202,14 @@ public class ModoCombate : MonoBehaviour
 
     public bool PuedeRodar()
     {
+        // 1. Si está muerto o recibiendo el impacto de un golpe, NO puede rodar
+        if (interfazJugador != null && (interfazJugador.SaberSiEstaMuerto() || interfazJugador.RecibiendoHit()))
+            return false;
+
+        // 2. Si está en medio de otra animación de combate, NO puede rodar
         if (desenfundando || enfundando || cubriendose || atacando)
             return false;
 
         return true;
     }
-   
 }

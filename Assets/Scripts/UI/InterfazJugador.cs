@@ -209,4 +209,18 @@ public class InterfazJugador : MonoBehaviour
             scriptTexto.Inicializar(valorDamage);
         }
     }
+    public bool SaberSiEstaMuerto()
+    {
+        return estaMuerto;
+    }
+
+    public bool RecibiendoHit()
+    {
+        // Evaluamos si el Animator está reproduciendo actualmente la animación de daño "Hit"
+        if (animator != null)
+        {
+            return animator.GetCurrentAnimatorStateInfo(0).IsName("Hit");
+        }
+        return false;
+    }
 }
