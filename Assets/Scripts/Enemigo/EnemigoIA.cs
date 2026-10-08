@@ -11,8 +11,8 @@ public class EnemigoIA : MonoBehaviour
     public Transform jugador;
 
     [Header("Ajustes de Salud")]
-    public float vidaEnemigo = 200f;
-    public float vidaParaFaseCritica = 60f;
+    public float vidaEnemigo = 1000f;
+    public float vidaParaFaseCritica = 250f;
 
     [Header("Rangos y Velocidades")]
     public float distanciaDeteccion = 15f;
@@ -97,7 +97,7 @@ public class EnemigoIA : MonoBehaviour
             yield return null;
         }
 
-        // Lanzarse (Fase Activa de Daño)
+        
         estadoActual = EstadoEnemigo.Cargando;
         if (animator) animator.SetTrigger("LaunchCharge");
 
@@ -113,7 +113,7 @@ public class EnemigoIA : MonoBehaviour
         estadoActual = EstadoEnemigo.Persiguiendo;
     }
 
-    //Detecta de forma física el impacto contra la Hurtbox
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (estadoActual == EstadoEnemigo.Cargando && collision.gameObject.CompareTag("Player"))
@@ -133,22 +133,19 @@ public class EnemigoIA : MonoBehaviour
 
         vidaEnemigo -= cantidad;
 
-        // Evalúa la variable personalizada del Inspector
+        
         if (vidaEnemigo <= vidaParaFaseCritica && vidaEnemigo > 0 && !faseCriticaActivada)
         {
             faseCriticaActivada = true;
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaEnemigoCritico);
-            Debug.Log("¡Música Cambiada: FASE CRÍTICA!");
+            Debug.Log("El monstruo está cerca de morir.");
         }
 
         if (vidaEnemigo <= 0 && estadoActual != EstadoEnemigo.Muerto)
         {
             estadoActual = EstadoEnemigo.Muerto;
-            if (animator) animator.SetTrigger("Die");
-
-            // Dispara la música de victoria al caer el jefe
             MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaVictoria);
-            Debug.Log("¡El monstruo ha sido cazado! Sonando música de victoria.");
+            Debug.Log("Ganaste Flaco.");
         }
     }
 }

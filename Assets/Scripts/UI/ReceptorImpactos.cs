@@ -5,7 +5,7 @@ using UnityEngine;
 public class ReceptorImpacto : MonoBehaviour
 {
     [Header("Ajustes de Vida")]
-    public float maximoImpactoSoportado = 100f;
+    public float maximoImpactoSoportado = 1000f;
     private float impactoAcumulado = 0f;
 
     [Header("Referencias del Sistema")]

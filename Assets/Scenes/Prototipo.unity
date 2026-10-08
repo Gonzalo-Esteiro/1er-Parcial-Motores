@@ -1403,13 +1403,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 126
+  Priority: 120
   DopplerLevel: 1
   MinDistance: 0
   MaxDistance: 40
@@ -1518,7 +1518,7 @@ PrefabInstance:
     - target: {fileID: 539033435813751307, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
       propertyPath: maximoImpactoSoportado
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 2255649677668902013, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
@@ -1538,17 +1538,17 @@ PrefabInstance:
     - target: {fileID: 2255649677668902013, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
       propertyPath: distanciaAtaque
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2255649677668902013, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
       propertyPath: fuerzaEmbestida
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2255649677668902013, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
       propertyPath: velocidadPasoAtras
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2255649677668902013, guid: b8d0bb6fb6f23434196cae7a6ccdae72,
         type: 3}
@@ -1693,6 +1693,19 @@ MonoBehaviour:
     type: 3}
   offsetEnemigo: {x: 0, y: 0, z: 0}
   esInvulnerable: 0
+--- !u!114 &1720914399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720914391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a88e07962f8892844a733f535d7bc9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reduccionDanio: 0.5
 --- !u!1 &1724488804
 GameObject:
   m_ObjectHideFlags: 0
@@ -2231,6 +2244,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 175765016}
     m_Modifications:
+    - target: {fileID: 42951617044884111, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: damageGolpe
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 345280839141623645, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2281,6 +2299,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1091361684209357712, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: damageGolpe
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 1117314596294188519, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       propertyPath: m_Name
@@ -2296,6 +2319,21 @@ PrefabInstance:
       propertyPath: interfazUI
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1891602242181747764, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.00023
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891602242181747764, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.00034
+      objectReference: {fileID: 0}
+    - target: {fileID: 1891602242181747764, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4609528822182440790, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       propertyPath: hitboxEscudo
@@ -2306,6 +2344,11 @@ PrefabInstance:
       propertyPath: hitboxEspada
       value: 
       objectReference: {fileID: 1462238797}
+    - target: {fileID: 6824759758157016714, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00092
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2313,6 +2356,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1117314596294188519, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}
       insertIndex: 6
+      addedObject: {fileID: 1720914399}
+    - targetCorrespondingSourceObject: {fileID: 1117314596294188519, guid: d60672c6ce8442a4ba77adbd14e069d4,
+        type: 3}
+      insertIndex: 7
       addedObject: {fileID: 1720914398}
     - targetCorrespondingSourceObject: {fileID: 3245938079896755270, guid: d60672c6ce8442a4ba77adbd14e069d4,
         type: 3}

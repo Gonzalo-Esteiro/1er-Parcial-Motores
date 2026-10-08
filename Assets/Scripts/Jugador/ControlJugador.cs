@@ -10,6 +10,7 @@ public class ControlJugador : MonoBehaviour
     [Header("Ajustes del Roll")]
     public float distanciaRodar = 3.0f;
     public float duracionRodar = 0.5f;
+    public AnimationCurve curvaVelocidadRoll = AnimationCurve.Linear(0, 2, 1, 0);
 
     public CamaraPrincipal camara;
 
@@ -27,7 +28,7 @@ public class ControlJugador : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        // Buscamos el componente unificado en el mismo objeto
+        
         interfaz = GetComponent<InterfazJugador>();
     }
 
@@ -36,22 +37,25 @@ public class ControlJugador : MonoBehaviour
         if (rodando)
         {
             tiempoRodar += Time.deltaTime;
+            float progresoNormalizado = Mathf.Clamp01(tiempoRodar / duracionRodar);
+            float multiplicadorCurva = curvaVelocidadRoll.Evaluate(progresoNormalizado);
+            float velocidadBase = distanciaRodar / duracionRodar;
 
-            Vector3 desplazamientoRodar = direccionRodado * (distanciaRodar / duracionRodar) * Time.deltaTime;
+            Vector3 desplazamientoRodar = direccionRodado * (velocidadBase * multiplicadorCurva) * Time.deltaTime;
             rb.MovePosition(rb.position + desplazamientoRodar);
 
             if (tiempoRodar >= duracionRodar)
             {
                 rodando = false;
             }
-
             return;
         }
 
-        // 1. Conseguir referencias de combate para filtrar el movimiento
+
+        
         ModoCombate combate = GetComponent<ModoCombate>();
 
-        // Calcular los vectores de movimiento normales
+        
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -61,31 +65,28 @@ public class ControlJugador : MonoBehaviour
         Vector3 movimiento = direccionCamara * vertical + derechaCamara * horizontal;
         movimiento = Vector3.ClampMagnitude(movimiento, 1.0f);
 
-        // =========================================================================
-        // CONTROL DE PERMISOS (Sustituye al return molesto que rompía la velocidad)
-        // =========================================================================
         if (combate != null && !combate.PuedeMoverse())
         {
-            movimiento = Vector3.zero; // Anula la dirección pero deja que el script siga fluyendo
+            movimiento = Vector3.zero;
         }
-        // =========================================================================
+        
 
         bool seEstaMoviendo = movimiento.magnitude > 0.1f;
         bool quiereCorrer = Input.GetKey(KeyCode.LeftShift);
 
         if (interfaz != null)
         {
-            // Le pasamos los datos a la interfaz para que reduzca o regenere la barra
+            
             interfaz.ManejarEstamina(quiereCorrer, seEstaMoviendo);
         }
 
-        // Detectar comando para Rodar (Roll) con validación de Estamina y Permisos
+        
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            // Solo dejamos rodar si el script de combate da permiso activo
+            
             if (combate != null && combate.PuedeRodar())
             {
-                // Solo rueda si la interfaz confirma que hay suficiente energía
+                
                 if (interfaz != null && interfaz.ConsumirStaminaRodar())
                 {
                     rodando = true;
@@ -107,10 +108,10 @@ public class ControlJugador : MonoBehaviour
             }
         }
 
-        // Lógica normal de movimiento (Caminar / Correr)
+        
         float velocidad = velocidadCaminar;
 
-        // Solo corre si presionas Shift Y ADEMÁS la interfaz dice que no estás fatigado
+        
         if (quiereCorrer && interfaz != null && interfaz.TieneEstaminaParaCorrer())
         {
             velocidad = velocidadCorrer;
@@ -135,10 +136,6 @@ public class ControlJugador : MonoBehaviour
             movimiento.magnitude * velocidad
         );
     }
-
-    // =========================================================================
-    // RECEPTORES DE EVENTOS DE ANIMACIÓN ORIGINALES (Invincibility Frames)
-    // =========================================================================
     public void IniciarIFrames()
     {
         if (interfaz != null) interfaz.esInvulnerable = true;
@@ -149,9 +146,6 @@ public class ControlJugador : MonoBehaviour
         if (interfaz != null) interfaz.esInvulnerable = false;
     }
 
-    // =========================================================================
-    // NUEVOS RECEPTORES PUENTE CON NOMBRES ÚNICOS (Evita la advertencia de duplicados)
-    // =========================================================================
     public void IniciarBloqueoHitDesdeAnimacion()
     {
         if (interfaz != null) interfaz.IniciarBloqueoHit();

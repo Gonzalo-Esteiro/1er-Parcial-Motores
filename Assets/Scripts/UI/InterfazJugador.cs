@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -38,31 +37,84 @@ public class InterfazJugador : MonoBehaviour
 
     void Start()
     {
-        // Inicializar componentes
+        
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody>();
 
-        // Inicializar Vida
+        
         vidaActual = vidaMaxima;
         ActualizarVisualVidaUI();
 
-        // Inicializar Stamina
+        
         staminaActual = staminaMaxima;
         ActualizarVisualStaminaUI();
     }
+    private void Morir()
+    {
+        estaMuerto = true;
+        vidasRestantes--;
 
-    // =========================================================================
-    // GESTIÓN DE VIDA Y DAÑO (Original de VidaJugador)
-    // =========================================================================
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
 
+        
+        if (barraVidaUI != null)
+        {
+            barraVidaUI.fillAmount = 0f;
+        }
+
+        
+        if (MusicManager.Instancia != null)
+        {
+            if (vidasRestantes > 0)
+            {
+                
+                MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDesmayo);
+            }
+            else
+            {
+                
+                MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDerrota);
+            }
+        }
+
+        
+        StartCoroutine(SecuenciaReiniciar());
+    }
+    private IEnumerator SecuenciaReiniciar()
+    {
+        
+        yield return new WaitForSeconds(6.0f);
+
+        if (vidasRestantes > 0)
+        {
+            
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            Debug.Log("GAME OVER DEFINITIVO - El cazador se ha quedado sin vidas en la expedición.");
+            
+        }
+    }
     public void RecibirDamage(float cantidad, Vector3 direccionAtaque)
     {
         if (estaMuerto || esInvulnerable) return;
 
+        bool cancelarAnimacionHit = false;
+        DefensaEscudo escudo = GetComponent<DefensaEscudo>();
+        
+        if (escudo != null)
+        {
+            cantidad = escudo.EvaluarGuardia(cantidad, out cancelarAnimacionHit);
+        }
+
         vidaActual -= cantidad;
         ActualizarVisualVidaUI();
 
-        Debug.Log("¡Cazador golpeado! Vida: " + vidaActual);
+        Debug.Log("Cazador, Vida: " + vidaActual);
 
         if (vidaActual <= 0)
         {
@@ -70,43 +122,16 @@ public class InterfazJugador : MonoBehaviour
         }
         else
         {
-            if (animator != null) animator.SetTrigger("Hit");
-            if (rb != null) rb.AddForce(-direccionAtaque * 5f, ForceMode.Impulse);
-        }
-    }
-
-    private void Morir()
-    {
-        estaMuerto = true;
-        vidasRestantes--;
-        if (animator != null) animator.SetTrigger("Die");
-
-        if (barraVidaUI != null) barraVidaUI.fillAmount = 0;
-
-        // Comprobación de música según vidas restantes
-        if (vidasRestantes > 0)
-        {
-            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDesmayo);
-        }
-        else
-        {
-            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDerrota);
-        }
-
-        StartCoroutine(SecuenciaReiniciar());
-    }
-
-    private IEnumerator SecuenciaReiniciar()
-    {
-        yield return new WaitForSeconds(6.0f);
-
-        if (vidasRestantes > 0)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        else
-        {
-            Debug.Log("GAME OVER DEFINITIVO");
+            
+            if (!cancelarAnimacionHit)
+            {
+                if (animator != null) animator.SetTrigger("Hit");
+                if (rb != null) rb.AddForce(-direccionAtaque * 5f, ForceMode.Impulse);
+            }
+            else
+            {
+                
+            }
         }
     }
 
@@ -117,12 +142,6 @@ public class InterfazJugador : MonoBehaviour
             barraVidaUI.fillAmount = vidaActual / vidaMaxima;
         }
     }
-
-
-    // =========================================================================
-    // GESTIÓN DE STAMINA (Original de InterfazJugador)
-    // =========================================================================
-
     public void ManejarEstamina(bool estaCorriendo, bool moviendose)
     {
         if (estaCorriendo && moviendose && !fatigado)
@@ -143,12 +162,15 @@ public class InterfazJugador : MonoBehaviour
                 fatigado = false;
             }
         }
+        else if (staminaActual > staminaMaxima)
+        {
+            staminaActual = staminaMaxima;
+        }
 
         staminaActual = Mathf.Clamp(staminaActual, 0f, staminaMaxima);
         ActualizarVisualStaminaUI();
     }
 
-    // Comprobación para el comando Roll
     public bool ConsumirStaminaRodar()
     {
         if (staminaActual >= costoRodar)
@@ -180,11 +202,6 @@ public class InterfazJugador : MonoBehaviour
         }
     }
 
-
-    // =========================================================================
-    // NÚMEROS DE DAÑO (Original de InterfazJugador)
-    // =========================================================================
-
     public void CrearNumeroDamage(float valorDamage, Vector3 posicionMundoEnemigo)
     {
         if (prefabTextoDamage == null) return;
@@ -214,7 +231,6 @@ public class InterfazJugador : MonoBehaviour
         return estaMuerto;
     }
 
-    // Nueva variable simple para saber si el cazador está aturdido por un golpe
     private bool bloqueadoPorHit = false;
 
     public bool RecibiendoHit()

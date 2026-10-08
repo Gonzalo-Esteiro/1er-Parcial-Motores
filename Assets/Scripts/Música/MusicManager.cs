@@ -41,11 +41,11 @@ public class MusicManager : MonoBehaviour
 
     private IEnumerator TransicionMusical(AudioClip nuevoClip)
     {
-        float duracionFade = 1f;
+        float duracionFade = 0.8f;
         float tiempo = 0f;
         float volumenInicial = audioSource.volume;
 
-        // 1. Fade Out del tema anterior
+        
         while (tiempo < duracionFade)
         {
             tiempo += Time.deltaTime;
@@ -60,11 +60,11 @@ public class MusicManager : MonoBehaviour
             audioSource.Play();
             tiempo = 0f;
 
-            // 2. Fade In del nuevo tema
+           
             while (tiempo < duracionFade)
             {
                 tiempo += Time.deltaTime;
-                audioSource.volume = Mathf.Lerp(0f, 1f, tiempo / duracionFade);
+                audioSource.volume = Mathf.Lerp(0f, 0.5f, tiempo / duracionFade);
                 yield return null;
             }
         }
