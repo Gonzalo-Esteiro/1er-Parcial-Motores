@@ -7196,7 +7196,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: 0.0033299504
+        value: 0.93
         inSlope: 1.9401389
         outSlope: 1.9401389
         tangentMode: 0
@@ -7769,7 +7769,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: 0.42978245
+        value: 0.05
         inSlope: -4.967045
         outSlope: -4.967045
         tangentMode: 0
@@ -7889,7 +7889,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: -0.09822394
+        value: -0.18
         inSlope: 6.88527
         outSlope: 6.88527
         tangentMode: 0
@@ -18839,7 +18839,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: 0.0033299504
+        value: 0.93
         inSlope: 1.9401389
         outSlope: 1.9401389
         tangentMode: 0
@@ -19412,7 +19412,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: 0.42978245
+        value: 0.05
         inSlope: -4.967045
         outSlope: -4.967045
         tangentMode: 0
@@ -19532,7 +19532,7 @@ AnimationClip:
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 0.125
-        value: -0.09822394
+        value: -0.18
         inSlope: 6.88527
         outSlope: 6.88527
         tangentMode: 0
@@ -22114,7 +22114,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.083333336
+  - time: 0.125
     functionName: EspadaAMano
     data: 
     objectReferenceParameter: {fileID: 0}
