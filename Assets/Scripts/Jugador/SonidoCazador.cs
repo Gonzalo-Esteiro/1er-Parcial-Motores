@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HunterAudioEvents : MonoBehaviour
@@ -27,8 +25,8 @@ public class HunterAudioEvents : MonoBehaviour
     public AudioClip audioAttack3;
 
     [Header("Ajustes Antispam")]
-    [SerializeField] private float cooldownPasos = 0.25f; // Tiempo mínimo entre pisadas
-    [SerializeField] private float cooldownAtaques = 0.15f; // Evita ráfagas si la animación se corta rápido
+    [SerializeField] private float cooldownPasos = 0.25f; 
+    [SerializeField] private float cooldownAtaques = 0.15f;
 
     private float tiempoUltimoPaso;
     private float tiempoUltimoAtaque;
@@ -46,7 +44,6 @@ public class HunterAudioEvents : MonoBehaviour
 
         if (sourceFootsteps != null && audioPaso != null)
         {
-            sourceFootsteps.pitch = Random.Range(0.85f, 1.15f);
             sourceFootsteps.PlayOneShot(audioPaso);
             tiempoUltimoPaso = Time.time;
         }
@@ -56,7 +53,6 @@ public class HunterAudioEvents : MonoBehaviour
     {
         if (sourceRoll != null && audioRoll != null)
         {
-            sourceRoll.pitch = Random.Range(0.95f, 1.05f);
             sourceRoll.PlayOneShot(audioRoll);
         }
     }
@@ -65,7 +61,6 @@ public class HunterAudioEvents : MonoBehaviour
     {
         if (sourcePosRoll != null && audioPosRoll != null)
         {
-            sourcePosRoll.pitch = Random.Range(0.95f, 1.05f);
             sourcePosRoll.PlayOneShot(audioPosRoll);
         }
     }
@@ -75,7 +70,6 @@ public class HunterAudioEvents : MonoBehaviour
     {
         if (sourceDesenfunde != null && audioDesenfunde != null)
         {
-            sourceDesenfunde.pitch = Random.Range(0.95f, 1.05f); // Variación sutil mecánica
             sourceDesenfunde.PlayOneShot(audioDesenfunde);
         }
     }
@@ -85,7 +79,6 @@ public class HunterAudioEvents : MonoBehaviour
     {
         if (sourceEnfunde != null && audioEnfunde != null)
         {
-            sourceEnfunde.pitch = Random.Range(0.95f, 1.05f);
             sourceEnfunde.PlayOneShot(audioEnfunde);
         }
     }
@@ -97,7 +90,6 @@ public class HunterAudioEvents : MonoBehaviour
 
         if (sourceAttack1 != null && audioAttack1 != null)
         {
-            sourceAttack1.pitch = Random.Range(0.9f, 1.1f); // Un poco más de variación para los golpes
             sourceAttack1.PlayOneShot(audioAttack1);
             tiempoUltimoAtaque = Time.time;
         }
@@ -110,7 +102,6 @@ public class HunterAudioEvents : MonoBehaviour
 
         if (sourceAttack3 != null && audioAttack3 != null)
         {
-            sourceAttack3.pitch = Random.Range(0.9f, 1.1f);
             sourceAttack3.PlayOneShot(audioAttack3);
             tiempoUltimoAtaque = Time.time;
         }
