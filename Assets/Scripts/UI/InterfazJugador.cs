@@ -1,33 +1,131 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InterfazJugador : MonoBehaviour
 {
-    [Header("Referencias UI")]
-    public Image barraStaminaFill;
+    [Header("Estadísticas de Vida")]
+    public float vidaMaxima = 100f;
+    public int vidasRestantes = 3;
+    private float vidaActual;
 
-    [Header("Ajustes de Stamina")]
+    [Header("Estadísticas de Stamina")]
     public float staminaMaxima = 100f;
     public float costoRodar = 25f;
     public float costoCorrerPorSegundo = 10f;
     public float velocidadRegeneracion = 20f;
+    public float recuperacionFatiga = 10f;
+    private float staminaActual;
+    private bool fatigado = false;
+
+    [Header("Interfaz Gráfica (UI)")]
+    public Image barraVidaUI;
+    public Image barraStaminaFill;
+    public Transform canvasPrincipal;
 
     [Header("Ajustes de Números de Daño")]
     public GameObject prefabTextoDamage;
     public Vector3 offsetEnemigo = new Vector3(0, 2f, 0);
-    public Transform canvasPrincipal;
 
-    public float recuperacionFatiga = 10f;
-    private float staminaActual;
-    private bool fatigado = false;
+    [Header("Estados y Físicas")]
+    public bool esInvulnerable = false;
+    private bool estaMuerto = false;
+
+    private Animator animator;
+    private Rigidbody rb;
+
     void Start()
     {
+        // Inicializar componentes
+        animator = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody>();
+
+        // Inicializar Vida
+        vidaActual = vidaMaxima;
+        ActualizarVisualVidaUI();
+
+        // Inicializar Stamina
         staminaActual = staminaMaxima;
-        ActualizarVisualUI();
+        ActualizarVisualStaminaUI();
     }
 
+    // =========================================================================
+    // GESTIÓN DE VIDA Y DAÑO (Original de VidaJugador)
+    // =========================================================================
+
+    public void RecibirDanio(float cantidad, Vector3 direccionAtaque)
+    {
+        if (estaMuerto || esInvulnerable) return;
+
+        vidaActual -= cantidad;
+        ActualizarVisualVidaUI();
+
+        Debug.Log("¡Cazador golpeado! Vida: " + vidaActual);
+
+        if (vidaActual <= 0)
+        {
+            Morir();
+        }
+        else
+        {
+            if (animator != null) animator.SetTrigger("Hit");
+            if (rb != null) rb.AddForce(-direccionAtaque * 5f, ForceMode.Impulse);
+        }
+    }
+
+    private void Morir()
+    {
+        estaMuerto = true;
+        vidasRestantes--;
+        if (animator != null) animator.SetTrigger("Die");
+
+        if (barraVidaUI != null) barraVidaUI.fillAmount = 0;
+
+        // Comprobación de música según vidas restantes
+        if (vidasRestantes > 0)
+        {
+            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDesmayo);
+        }
+        else
+        {
+            MusicManager.Instancia.CambiarTema(MusicManager.Instancia.musicaDerrota);
+        }
+
+        StartCoroutine(SecuenciaReiniciar());
+    }
+
+    private IEnumerator SecuenciaReiniciar()
+    {
+        yield return new WaitForSeconds(6.0f);
+
+        if (vidasRestantes > 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            Debug.Log("GAME OVER DEFINITIVO");
+        }
+    }
+
+    void ActualizarVisualVidaUI()
+    {
+        if (barraVidaUI != null)
+        {
+            barraVidaUI.fillAmount = vidaActual / vidaMaxima;
+        }
+    }
+
+    // Eventos de animación llamados por el clip de Roll
+    public void IniciarIFrames() { esInvulnerable = true; }
+    public void TerminarIFrames() { esInvulnerable = false; }
+
+
+    // =========================================================================
+    // GESTIÓN DE STAMINA (Original de InterfazJugador)
+    // =========================================================================
 
     public void ManejarEstamina(bool estaCorriendo, bool moviendose)
     {
@@ -35,7 +133,6 @@ public class InterfazJugador : MonoBehaviour
         {
             staminaActual -= costoCorrerPorSegundo * Time.deltaTime;
 
-            // Si tocamos el fondo absoluto, entramos en estado de fatiga inmediatamente
             if (staminaActual <= 0f)
             {
                 fatigado = true;
@@ -45,7 +142,6 @@ public class InterfazJugador : MonoBehaviour
         {
             staminaActual += velocidadRegeneracion * Time.deltaTime;
 
-            // Desactivamos la fatiga SOLO cuando la energía supera el umbral de seguridad (ej: 10f)
             if (fatigado && staminaActual >= recuperacionFatiga)
             {
                 fatigado = false;
@@ -53,7 +149,7 @@ public class InterfazJugador : MonoBehaviour
         }
 
         staminaActual = Mathf.Clamp(staminaActual, 0f, staminaMaxima);
-        ActualizarVisualUI();
+        ActualizarVisualStaminaUI();
     }
 
     // Comprobación para el comando Roll
@@ -63,32 +159,35 @@ public class InterfazJugador : MonoBehaviour
         {
             staminaActual -= costoRodar;
 
-            // Rodar también puede gatillar la fatiga si te deja en 0
             if (staminaActual <= 0f)
             {
                 fatigado = true;
             }
 
             staminaActual = Mathf.Clamp(staminaActual, 0f, staminaMaxima);
-            ActualizarVisualUI();
+            ActualizarVisualStaminaUI();
             return true;
         }
         return false;
     }
 
-    // El script de movimiento ahora consulta directamente si está fatigado
     public bool TieneEstaminaParaCorrer()
     {
         return !fatigado && staminaActual > 0f;
     }
 
-    void ActualizarVisualUI()
+    void ActualizarVisualStaminaUI()
     {
         if (barraStaminaFill != null)
         {
             barraStaminaFill.fillAmount = staminaActual / staminaMaxima;
         }
     }
+
+
+    // =========================================================================
+    // NÚMEROS DE DAÑO (Original de InterfazJugador)
+    // =========================================================================
 
     public void CrearNumeroDamage(float valorDamage, Vector3 posicionMundoEnemigo)
     {
@@ -100,19 +199,12 @@ public class InterfazJugador : MonoBehaviour
             if (objCanvas != null) canvasPrincipal = objCanvas.transform;
         }
 
-        // 1. Calculamos la posición real en el espacio 3D sumando la altura (offset) sobre el enemigo
         Vector3 posicionMundoFinal = posicionMundoEnemigo + offsetEnemigo;
-
-        // 2. CONVERSIÓN CRÍTICA: Transformamos la posición 3D del mundo a la posición 2D de la pantalla del jugador
         Vector3 posicionPantalla = Camera.main.WorldToScreenPoint(posicionMundoFinal);
 
-        // Si el enemigo está detrás de la cámara, ignoramos el renderizado para evitar glitches visuales
         if (posicionPantalla.z < 0) return;
 
-        // 3. Instanciamos el texto flotante directamente dentro del Canvas
         GameObject clonTexto = Instantiate(prefabTextoDamage, canvasPrincipal);
-
-        // 4. Asignamos de forma exacta la posición en coordenadas de pantalla (2D)
         clonTexto.transform.position = posicionPantalla;
 
         TextoDamageFlotante scriptTexto = clonTexto.GetComponent<TextoDamageFlotante>();
@@ -121,6 +213,4 @@ public class InterfazJugador : MonoBehaviour
             scriptTexto.Inicializar(valorDamage);
         }
     }
-
-
 }

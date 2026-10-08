@@ -119,7 +119,7 @@ public class EnemigoIA : MonoBehaviour
     {
         if (estadoActual == EstadoEnemigo.Cargando && collision.gameObject.CompareTag("Player"))
         {
-            VidaJugador vida = collision.gameObject.GetComponent<VidaJugador>();
+            InterfazJugador vida = collision.gameObject.GetComponent<InterfazJugador>();
             if (vida != null)
             {
                 Vector3 direccionImpacto = (collision.transform.position - transform.position).normalized;
